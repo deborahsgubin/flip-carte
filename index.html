@@ -4,34 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Flip Cards Grid</title>
+
   <style>
     :root{
-  --bg: #0b1220;
-  --cardW: 220px;
-  --cardH: auto;
-  --radius: 18px;
-  --shadow: 0 18px 45px rgba(0,0,0,.45);
-  --border: rgba(255,255,255,.12);
-  --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.72);
-  --accent: #7c3aed;
-}
+      --bg: #0b1220;
+      --cardW: 220px;          /* larghezza carta */
+      --radius: 18px;
+      --shadow: 0 18px 45px rgba(0,0,0,.45);
+      --border: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --accent: #7c3aed;
+    }
 
-.card-img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: var(--radius);
-}
+    *{ box-sizing: border-box; }
 
-
-    *{box-sizing:border-box}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% 10%, rgba(124,58,237,.25), transparent 60%),
-                  radial-gradient(900px 500px at 90% 30%, rgba(34,211,238,.18), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(124,58,237,.25), transparent 60%),
+        radial-gradient(900px 500px at 90% 30%, rgba(34,211,238,.18), transparent 55%),
+        var(--bg);
       color: var(--text);
       min-height: 100vh;
       padding: 28px 18px 40px;
@@ -56,6 +50,7 @@
       font-size: clamp(18px, 2.4vw, 26px);
       letter-spacing: .2px;
     }
+
     .sub{
       margin:0;
       color: var(--muted);
@@ -68,6 +63,7 @@
       align-items:center;
       flex-wrap: wrap;
     }
+
     .btn{
       border: 1px solid var(--border);
       background: rgba(255,255,255,.06);
@@ -89,10 +85,11 @@
       align-items: stretch;
     }
 
-    /* Carta: contenitore 3D */
+    /* Carta: dimensione e prospettiva */
     .card{
+      width: var(--cardW);
+      aspect-ratio: 333 / 504; /* proporzione della tua carta (333x504) */
       perspective: 1100px;
-      height: var(--cardH);
     }
 
     /* Bottone “invisibile” per accessibilità */
@@ -105,6 +102,7 @@
       border-radius: var(--radius);
       outline: none;
     }
+
     .card button:focus-visible{
       box-shadow: 0 0 0 3px rgba(124,58,237,.55);
     }
@@ -132,66 +130,19 @@
       overflow:hidden;
       display:flex;
       flex-direction: column;
-      padding: 0px;
-    }
-
-    .front{
-      background:
-        radial-gradient(380px 260px at 20% 15%, rgba(255,255,255,.14), transparent 60%),
-        linear-gradient(145deg, rgba(124,58,237,.35), rgba(255,255,255,.06));
+      padding: 0; /* immagini a pieno */
+      background: rgba(255,255,255,.04);
     }
 
     .back{
       transform: rotateY(180deg);
-      background:
-        radial-gradient(360px 240px at 80% 10%, rgba(34,211,238,.22), transparent 60%),
-        linear-gradient(145deg, rgba(34,211,238,.22), rgba(255,255,255,.06));
     }
 
-    .badge{
-      display:inline-flex;
-      align-self:flex-start;
-      gap:8px;
-      align-items:center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.14);
-      font-size: 12px;
-      color: rgba(255,255,255,.86);
-    }
-
-    .title{
-      margin: 12px 0 6px;
-      font-size: 18px;
-      line-height: 1.1;
-    }
-
-    .desc{
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
-    .spacer{ flex:1; }
-
-    .hint{
-      margin-top: 14px;
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      gap: 10px;
-      color: rgba(255,255,255,.78);
-      font-size: 12px;
-    }
-
-    .chip{
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px dashed rgba(255,255,255,.22);
-      background: rgba(0,0,0,.12);
-      white-space: nowrap;
+    .card-img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
     }
 
     /* Rispetta utenti che preferiscono meno animazioni */
@@ -199,12 +150,13 @@
       .inner{ transition:none; }
     }
 
-    /* Un filo più alta su schermi molto piccoli */
+    /* Su schermi piccoli, rendi le carte un filo più grandi */
     @media (max-width: 420px){
-      :root{ --cardH: 320px; }
+      :root{ --cardW: 240px; }
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <header>
@@ -213,111 +165,67 @@
         <p class="sub">Clicca (o premi Invio) per girare la carta e vedere il retro.</p>
       </div>
       <div class="toolbar">
-        <button class="btn" id="flipAll">Gira tutte</button>
-        <button class="btn" id="resetAll">Reset</button>
+        <button class="btn" id="flipAll" type="button">Gira tutte</button>
+        <button class="btn" id="resetAll" type="button">Reset</button>
       </div>
     </header>
 
     <main class="grid" id="grid">
-      <!-- CARD 1 -->
+      <!-- CARD 1 (IMMAGINI) -->
       <div class="card" data-card>
-        <button type="button" aria-label="Gira carta: Obiettivo 1">
+        <button type="button" aria-label="Gira carta 1">
           <div class="inner">
             <section class="face front">
-  <img src="images/front1.png" class="card-img">
-</section>
-
-<section class="face back">
-  <img src="images/front2.png" class="card-img">
-</section>
-          </div>
-        </button>
-      </div>
-
-      <!-- CARD 2 -->
-      <div class="card" data-card>
-        <button type="button" aria-label="Gira carta: Procedura">
-          <div class="inner">
-            <section class="face front">
-              <span class="badge">🧩 Modulo 2</span>
-              <h2 class="title">Procedura</h2>
-              <p class="desc">I passaggi per completare correttamente l’attività.</p>
-              <div class="spacer"></div>
-              <div class="hint">
-                <span class="chip">Tap</span>
-                <span class="chip">→ retro</span>
-              </div>
+              <img src="images/front1.png" class="card-img" alt="Carta 1 fronte">
             </section>
             <section class="face back">
-              <span class="badge">✅ Checklist</span>
-              <h2 class="title">Step</h2>
-              <p class="desc">1) Prepara<br>2) Esegui<br>3) Verifica<br>4) Consegna</p>
-              <div class="spacer"></div>
-              <div class="hint">
-                <span class="chip">Consiglio</span>
-                <span class="chip">Mantieni ordine</span>
-              </div>
+              <img src="images/front2.png" class="card-img" alt="Carta 1 retro">
             </section>
           </div>
         </button>
       </div>
 
-      <!-- CARD 3 -->
+      <!-- CARD 2 (placeholder) -->
       <div class="card" data-card>
-        <button type="button" aria-label="Gira carta: Caso studio">
+        <button type="button" aria-label="Gira carta 2">
           <div class="inner">
             <section class="face front">
-              <span class="badge">📚 Modulo 3</span>
-              <h2 class="title">Caso studio</h2>
-              <p class="desc">Una situazione reale per vedere il concetto in azione.</p>
-              <div class="spacer"></div>
-              <div class="hint">
-                <span class="chip">Clicca</span>
-                <span class="chip">↻</span>
-              </div>
+              <img src="images/front1.png" class="card-img" alt="Carta 2 fronte (placeholder)">
             </section>
             <section class="face back">
-              <span class="badge">🔎 Analisi</span>
-              <h2 class="title">Domande</h2>
-              <p class="desc">• Cosa è successo?<br>• Perché?<br>• Cosa faresti tu?</p>
-              <div class="spacer"></div>
-              <div class="hint">
-                <span class="chip">Bonus</span>
-                <span class="chip">Discussione</span>
-              </div>
+              <img src="images/front2.png" class="card-img" alt="Carta 2 retro (placeholder)">
             </section>
           </div>
         </button>
       </div>
 
-      <!-- CARD 4 -->
+      <!-- CARD 3 (placeholder) -->
       <div class="card" data-card>
-        <button type="button" aria-label="Gira carta: Quiz">
+        <button type="button" aria-label="Gira carta 3">
           <div class="inner">
             <section class="face front">
-              <span class="badge">🎯 Modulo 4</span>
-              <h2 class="title">Quiz</h2>
-              <p class="desc">Verifica rapida: quanto ti ricordi?</p>
-              <div class="spacer"></div>
-              <div class="hint">
-                <span class="chip">Clicca</span>
-                <span class="chip">per vedere</span>
-              </div>
+              <img src="images/front1.png" class="card-img" alt="Carta 3 fronte (placeholder)">
             </section>
             <section class="face back">
-              <span class="badge">📝 Risposte</span>
-              <h2 class="title">Soluzioni</h2>
-              <p class="desc">Mostra qui le risposte, oppure un link a un test Docebo.</p>
-              <div class="spacer"></div>
-              <div class="hint">
-                <span class="chip">Tip</span>
-                <span class="chip">Link esterno</span>
-              </div>
+              <img src="images/front2.png" class="card-img" alt="Carta 3 retro (placeholder)">
             </section>
           </div>
         </button>
       </div>
 
+      <!-- CARD 4 (placeholder) -->
+      <div class="card" data-card>
+        <button type="button" aria-label="Gira carta 4">
+          <div class="inner">
+            <section class="face front">
+              <img src="images/front1.png" class="card-img" alt="Carta 4 fronte (placeholder)">
+            </section>
+            <section class="face back">
+              <img src="images/front2.png" class="card-img" alt="Carta 4 retro (placeholder)">
+            </section>
+          </div>
+        </button>
+      </div>
     </main>
   </div>
 
@@ -325,17 +233,8 @@
     // Flip singolo: toggle classe .is-flipped sul contenitore .card
     document.querySelectorAll("[data-card]").forEach(card => {
       card.addEventListener("click", (e) => {
-        // Evita selezioni strane su mobile
         e.preventDefault?.();
         card.classList.toggle("is-flipped");
-      });
-
-      // Supporto tastiera: il button già gestisce Invio/Spazio, ma qui evitiamo doppio toggle
-      const btn = card.querySelector("button");
-      btn.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          // il click verrà emesso comunque, quindi niente toggle qui
-        }
       });
     });
 
@@ -354,14 +253,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
