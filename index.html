@@ -65,11 +65,12 @@
     .btn:active{ transform: scale(.99); }
 
     .grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--cardW)), 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--cardW), var(--cardW)));
   gap: 8px;
-  align-items: stretch;
+
   justify-content: center;
+  justify-items: center;
 }
 
 
@@ -235,6 +236,7 @@
   </script>
 </body>
 </html>
+
 
 
 
