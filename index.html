@@ -3,18 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Flip Cards Grid</title>
+  <title>Flip Cards</title>
 
   <style>
     :root{
       --bg: #0b1220;
-      --cardW: 220px;          /* larghezza carta */
+      --cardW: 220px;
       --radius: 18px;
       --shadow: 0 18px 45px rgba(0,0,0,.45);
       --border: rgba(255,255,255,.12);
       --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-      --accent: #7c3aed;
     }
 
     *{ box-sizing: border-box; }
@@ -22,77 +20,67 @@
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(1200px 600px at 20% 10%, rgba(124,58,237,.25), transparent 60%),
-        radial-gradient(900px 500px at 90% 30%, rgba(34,211,238,.18), transparent 55%),
-        var(--bg);
+
+      /* ✅ background immagine */
+      background: url("images/background.png") center / cover no-repeat fixed;
+      /* fallback se l’immagine non carica */
+      background-color: var(--bg);
+
       color: var(--text);
       min-height: 100vh;
-      padding: 28px 18px 40px;
+
+      /* un po’ di “cornice” ai lati */
+      padding: 18px 14px 28px;
     }
 
     .wrap{
       max-width: 1100px;
       margin: 0 auto;
+      position: relative;
     }
 
-    header{
-      display:flex;
-      gap: 14px;
-      align-items: baseline;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    h1{
-      margin:0;
-      font-size: clamp(18px, 2.4vw, 26px);
-      letter-spacing: .2px;
-    }
-
-    .sub{
-      margin:0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
+    /* Toolbar discreta (senza titolo sopra) */
     .toolbar{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap: wrap;
+      position: sticky;
+      top: 10px;
+      z-index: 5;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .btn{
       border: 1px solid var(--border);
-      background: rgba(255,255,255,.06);
+      background: rgba(0,0,0,.30);
+      backdrop-filter: blur(6px);
       color: var(--text);
       border-radius: 12px;
-      padding: 9px 12px;
+      padding: 8px 10px;
       cursor: pointer;
       user-select:none;
-      transition: transform .08s ease, background .2s ease;
       font-size: 13px;
     }
-    .btn:active{ transform: scale(.98); }
-    .btn:hover{ background: rgba(255,255,255,.10); }
+    .btn:hover{ background: rgba(0,0,0,.40); }
+    .btn:active{ transform: scale(.99); }
 
     .grid{
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--cardW)), 1fr));
-      gap: 18px;
+
+      /* ✅ meno spazio tra le carte */
+      gap: 8px;
+
       align-items: stretch;
     }
 
     /* Carta: dimensione e prospettiva */
     .card{
       width: var(--cardW);
-      aspect-ratio: 333 / 504; /* proporzione della tua carta (333x504) */
+      aspect-ratio: 333 / 504; /* proporzione carta (333x504) */
       perspective: 1100px;
     }
 
-    /* Bottone “invisibile” per accessibilità */
     .card button{
       all: unset;
       width: 100%;
@@ -128,10 +116,11 @@
       border-radius: var(--radius);
       border: 1px solid var(--border);
       overflow:hidden;
-      display:flex;
-      flex-direction: column;
-      padding: 0; /* immagini a pieno */
-      background: rgba(255,255,255,.04);
+
+      /* ✅ niente padding: immagine a pieno */
+      padding: 0;
+
+      background: rgba(0,0,0,.18);
     }
 
     .back{
@@ -145,33 +134,26 @@
       display:block;
     }
 
-    /* Rispetta utenti che preferiscono meno animazioni */
     @media (prefers-reduced-motion: reduce){
       .inner{ transition:none; }
     }
 
-    /* Su schermi piccoli, rendi le carte un filo più grandi */
     @media (max-width: 420px){
       :root{ --cardW: 240px; }
+      .grid{ gap: 6px; }
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <header>
-      <div>
-        <h1>Carte a flip su griglia 🃏</h1>
-        <p class="sub">Clicca (o premi Invio) per girare la carta e vedere il retro.</p>
-      </div>
-      <div class="toolbar">
-        <button class="btn" id="flipAll" type="button">Gira tutte</button>
-        <button class="btn" id="resetAll" type="button">Reset</button>
-      </div>
-    </header>
+    <div class="toolbar">
+      <button class="btn" id="flipAll" type="button">Gira tutte</button>
+      <button class="btn" id="resetAll" type="button">Reset</button>
+    </div>
 
     <main class="grid" id="grid">
-      <!-- CARD 1 (IMMAGINI) -->
+      <!-- CARD 1 -->
       <div class="card" data-card>
         <button type="button" aria-label="Gira carta 1">
           <div class="inner">
@@ -185,52 +167,12 @@
         </button>
       </div>
 
-      <!-- CARD 2 (placeholder) -->
-      <div class="card" data-card>
-        <button type="button" aria-label="Gira carta 2">
-          <div class="inner">
-            <section class="face front">
-              <img src="images/front1.png" class="card-img" alt="Carta 2 fronte (placeholder)">
-            </section>
-            <section class="face back">
-              <img src="images/front2.png" class="card-img" alt="Carta 2 retro (placeholder)">
-            </section>
-          </div>
-        </button>
-      </div>
-
-      <!-- CARD 3 (placeholder) -->
-      <div class="card" data-card>
-        <button type="button" aria-label="Gira carta 3">
-          <div class="inner">
-            <section class="face front">
-              <img src="images/front1.png" class="card-img" alt="Carta 3 fronte (placeholder)">
-            </section>
-            <section class="face back">
-              <img src="images/front2.png" class="card-img" alt="Carta 3 retro (placeholder)">
-            </section>
-          </div>
-        </button>
-      </div>
-
-      <!-- CARD 4 (placeholder) -->
-      <div class="card" data-card>
-        <button type="button" aria-label="Gira carta 4">
-          <div class="inner">
-            <section class="face front">
-              <img src="images/front1.png" class="card-img" alt="Carta 4 fronte (placeholder)">
-            </section>
-            <section class="face back">
-              <img src="images/front2.png" class="card-img" alt="Carta 4 retro (placeholder)">
-            </section>
-          </div>
-        </button>
-      </div>
+      <!-- DUPLICA questo blocco per altre carte -->
+      <!-- Esempio: cambia i src in images/front3.png e images/back3.png ecc. -->
     </main>
   </div>
 
   <script>
-    // Flip singolo: toggle classe .is-flipped sul contenitore .card
     document.querySelectorAll("[data-card]").forEach(card => {
       card.addEventListener("click", (e) => {
         e.preventDefault?.();
@@ -238,7 +180,6 @@
       });
     });
 
-    // Controlli globali
     const cards = () => Array.from(document.querySelectorAll("[data-card]"));
 
     document.getElementById("flipAll").addEventListener("click", () => {
